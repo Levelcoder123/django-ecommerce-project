@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Order Successful!{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+    <div class="py-5">
+        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+        <h1 class="display-5 fw-bold mt-3">Thank You!</h1>
+        <p class="fs-4 text-muted">Your Order #{{ order.id }} has been placed successfully.</p>
+
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">
+                We have received your order and will process it shortly.
+                You will receive an email confirmation soon (if email functionality were implemented).
+            </p>
+
+            <h5 class="mt-4">Order Summary:</h5>
+            <ul class="list-group mb-3">
+                {% for item in order.items.all %}
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">{{ item.product.name }}</h6>
+                        <small class="text-muted">Quantity: {{ item.quantity }}</small>
+                    </div>
+                    <span class="text-muted">${{ item.get_cost|floatformat:2 }}</span>
+                </li>
+                {% endfor %}
+                <li class="list-group-item d-flex justify-content-between bg-light">
+                    <span class="fw-bold">Total (USD)</span>
+                    <strong>${{ order.total_amount|floatformat:2 }}</strong>
+                </li>
+            </ul>
+
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg px-4 gap-3">Continue Shopping</a>
+                {# <a href="#" class="btn btn-outline-secondary btn-lg px-4">View My Orders</a> #}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

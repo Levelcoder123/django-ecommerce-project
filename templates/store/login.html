@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Login</h2>
+                    <form method="POST"
+                          action="{% url 'login_page' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">
+                        {% csrf_token %}
+
+                        {{ form.username }}
+                        {{ form.password }}
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger p-2 mt-2">
+                            {% for field, error_list in form.errors.items %}
+                            {% for error in error_list %}
+                            <small>{{ error }}</small><br>
+                            {% endfor %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-dark btn-block mt-3">Login</button>
+                        </div>
+                    </form>
+                    <p class="text-center mt-3">
+                        Don't have an account? <a href="{% url 'register_page' %}">Register here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

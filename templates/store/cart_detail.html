@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Your Shopping Cart{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Your Shopping Cart</h1>
+
+    {% if not cart.items.all %}
+    <div class="alert alert-info" role="alert">
+        Your cart is empty. <a href="{% url 'product_list' %}" class="alert-link">Continue shopping!</a>
+    </div>
+    {% else %}
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col" style="width: 15%;">Image</th>
+            <th scope="col" style="width: 35%;">Product</th>
+            <th scope="col" class="text-center" style="width: 15%;">Quantity</th>
+            <th scope="col" class="text-end" style="width: 15%;">Unit Price</th>
+            <th scope="col" class="text-end" style="width: 15%;">Subtotal</th>
+            <th scope="col" class="text-center" style="width: 5%;">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in cart.items.all %}
+        <tr>
+            <td>
+                {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-fluid rounded"
+                     style="max-height: 75px;">
+                {% else %}
+                <img src="https://via.placeholder.com/100x75.png?text=No+Image" class="img-fluid rounded"
+                     alt="No image">
+                {% endif %}
+            </td>
+            <td><a href="{% url 'product_detail' pk=item.product.pk %}">{{ item.product.name }}</a></td>
+            <td class="text-center">
+                <form method="POST" action="{% url 'update_cart_item' item_id=item.pk %}"
+                      class="d-inline-flex align-items-center">
+                    {% csrf_token %}
+                    <input type="number" name="quantity" value="{{ item.quantity }}"
+                           min="0" {# Allow 0 for removal via quantity update #}
+                           max="{{ item.product.stock }}"
+                           class="form-control form-control-sm"
+                           style="width: 70px; margin-right: 5px;"
+                           required>
+                    <button type="submit" class="btn btn-sm btn-outline-primary" title="Update quantity">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </button>
+                </form>
+            </td>
+            <td class="text-end">${{ item.product.price|floatformat:2 }}</td>
+            <td class="text-end">${{ item.get_total_price|floatformat:2 }}</td>
+            <td class="text-center">
+                <form method="POST" action="{% url 'remove_from_cart' item_id=item.pk %}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Remove item">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="4" class="text-end fw-bold">Total Items:</td>
+            <td class="text-end fw-bold">{{ cart.get_total_items }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="4" class="text-end fs-5 fw-bold">Grand Total:</td>
+            <td class="text-end fs-5 fw-bold">${{ cart.get_total_price|floatformat:2 }}</td>
+            <td></td>
+        </tr>
+        </tfoot>
+    </table>
+
+    <div class="text-end mt-4">
+        <a href="{% url 'product_list' %}" class="btn btn-outline-secondary me-2">Continue Shopping</a>
+        <a href="{% url 'checkout_page' %}" class="btn btn-primary btn-lg">Proceed to Checkout</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

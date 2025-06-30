@@ -30,9 +30,9 @@ load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = 'django-insecure-upe#%sa-!k!=09l!=_wosdsdg-iw%#)@2afvutbeb4%_#=p5g7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['djangoecommercesite.pythonanywhere.com']
 
 # Application definition
 
